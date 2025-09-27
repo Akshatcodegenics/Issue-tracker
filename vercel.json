@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "st/issue-tracker/api/index.js", "use": "@vercel/node" },
+    { "src": "st/issue-tracker/client/package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/st/issue-tracker/api/index.js" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ],
+  "functions": {
+    "st/issue-tracker/api/index.js": { "includeFiles": "st/issue-tracker/api/**" }
+  }
+}
