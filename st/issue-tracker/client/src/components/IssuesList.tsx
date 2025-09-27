@@ -159,11 +159,13 @@ const IssuesList: React.FC = () => {
         page: page + 1, // API uses 1-based pagination
         pageSize: rowsPerPage,
       });
-      
-      const newIssues = response.data.issues;
-      
+
+      const data = response?.data as any;
+      const newIssues: Issue[] = Array.isArray(data?.issues) ? data.issues : [];
+      const total: number = Number(data?.pagination?.total) || 0;
+
       // Check for status changes to trigger celebrations
-      if (issues.length > 0) {
+      if (issues.length > 0 && newIssues.length > 0) {
         newIssues.forEach(newIssue => {
           const oldIssue = issues.find(issue => issue._id === newIssue._id);
           if (oldIssue) {
@@ -178,9 +180,9 @@ const IssuesList: React.FC = () => {
           }
         });
       }
-      
+
       setIssues(newIssues);
-      setTotalCount(response.data.pagination.total);
+      setTotalCount(total);
     } catch (err: any) {
       setError('Failed to fetch issues: ' + (err.message || 'Unknown error'));
     } finally {
