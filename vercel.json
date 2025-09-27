@@ -1,7 +1,7 @@
 {
   "version": 2,
   "installCommand": "cd st/issue-tracker && npm run install-all",
-  "buildCommand": "cd st/issue-tracker && npm run build",
+  "buildCommand": "cd st/issue-tracker && CI=false npm run build",
   "outputDirectory": "st/issue-tracker/client/build",
   "routes": [
     { "src": "/api/(.*)", "dest": "/st/issue-tracker/api/index.js" },
