@@ -5,7 +5,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Container, AppBar, Toolbar, Typography, Box } from '@mui/material';
 import IssuesList from './components/IssuesList';
 import IssueDetail from './components/IssueDetail';
-import Watermark3D from './components/Watermark3D';
 import './App.css';
 
 const theme = createTheme({
@@ -25,9 +24,6 @@ function App() {
       <CssBaseline />
       <Router>
         <Box sx={{ position: 'relative', minHeight: '100vh' }}>
-          {/* 3D Watermark Background */}
-          <Watermark3D />
-          
           {/* Main App Content */}
           <Box sx={{ position: 'relative', zIndex: 1 }}>
             <AppBar 
