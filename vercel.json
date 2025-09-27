@@ -1,9 +1,8 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "st/issue-tracker/api/index.js", "use": "@vercel/node" },
-    { "src": "st/issue-tracker/client/package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } }
-  ],
+  "installCommand": "cd st/issue-tracker && npm run install-all",
+  "buildCommand": "cd st/issue-tracker && npm run build",
+  "outputDirectory": "st/issue-tracker/client/build",
   "routes": [
     { "src": "/api/(.*)", "dest": "/st/issue-tracker/api/index.js" },
     { "handle": "filesystem" },
