@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button, Paper } from '@mui/material';
+import { Typography, Button, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
 import { Refresh as RefreshIcon, Error as ErrorIcon } from '@mui/icons-material';
 

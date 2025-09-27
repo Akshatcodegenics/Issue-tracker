@@ -197,6 +197,7 @@ const IssuesList: React.FC = () => {
     }
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchIssues();
   }, [page, rowsPerPage, filters]);
