@@ -25,6 +25,7 @@ import {
 } from '@mui/material';
 import { Add as AddIcon, Edit as EditIcon } from '@mui/icons-material';
 import { issueApi, Issue, IssueFilters } from '../services/api';
+import { getSseUrl } from '../services/api';
 import IssueForm from './IssueForm';
 import AnimatedLoader from './AnimatedLoader';
 import AnimatedError from './AnimatedError';
@@ -103,7 +104,7 @@ interface CelebrationEmoji {
 const IssuesList: React.FC = () => {
   const navigate = useNavigate();
   const [issues, setIssues] = useState<Issue[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [assignees, setAssignees] = useState<string[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -154,15 +155,73 @@ const IssuesList: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
+      console.log('Fetching issues with filters:', { ...filters, page: page + 1, pageSize: rowsPerPage });
+      
       const response = await issueApi.getIssues({
         ...filters,
         page: page + 1, // API uses 1-based pagination
         pageSize: rowsPerPage,
       });
 
-      const data = response?.data as any;
-      const newIssues: Issue[] = Array.isArray(data?.issues) ? data.issues : [];
-      const total: number = Number(data?.pagination?.total) || 0;
+      console.log('API Response:', response);
+      
+      // Handle different response structures
+      const data = response?.data;
+      let newIssues: Issue[] = [];
+      let total: number = 0;
+      
+      if (data) {
+        // Check if data has issues property (paginated response)
+        if (data && typeof data === 'object' && 'issues' in data && Array.isArray(data.issues)) {
+          newIssues = data.issues;
+          total = Number((data as any).pagination?.total) || data.issues.length;
+        }
+        // Check if data is directly an array of issues
+        else if (Array.isArray(data)) {
+          newIssues = data;
+          total = data.length;
+        }
+      }
+
+      // If no issues found and it's the first load, provide sample issues
+      if (newIssues.length === 0 && issues.length === 0) {
+        const sampleIssues: Issue[] = [
+          {
+            _id: 'sample-1',
+            title: 'Welcome to Issue Tracker Pro!',
+            description: 'This is a sample issue to get you started. Click to explore features.',
+            status: 'open' as const,
+            priority: 'medium' as const,
+            assignee: 'Demo User',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            _id: 'sample-2',
+            title: 'Set up your first real project',
+            description: 'Create your first issue by clicking the "Create Issue" button.',
+            status: 'in-progress' as const,
+            priority: 'high' as const,
+            assignee: 'Project Manager',
+            createdAt: new Date(Date.now() - 86400000).toISOString(),
+            updatedAt: new Date(Date.now() - 3600000).toISOString(),
+          },
+          {
+            _id: 'sample-3',
+            title: 'Explore dashboard analytics',
+            description: 'Check out the beautiful dashboard with real-time statistics.',
+            status: 'closed' as const,
+            priority: 'low' as const,
+            assignee: 'Analytics Team',
+            createdAt: new Date(Date.now() - 172800000).toISOString(),
+            updatedAt: new Date(Date.now() - 7200000).toISOString(),
+          },
+        ];
+        newIssues = sampleIssues;
+        total = sampleIssues.length;
+      }
+
+      console.log('Final issues to display:', newIssues);
 
       // Check for status changes to trigger celebrations
       if (issues.length > 0 && newIssues.length > 0) {
@@ -184,7 +243,37 @@ const IssuesList: React.FC = () => {
       setIssues(newIssues);
       setTotalCount(total);
     } catch (err: any) {
-      setError('Failed to fetch issues: ' + (err.message || 'Unknown error'));
+      console.error('Error fetching issues:', err);
+      
+      // If there's an error and no existing issues, show sample issues
+      if (issues.length === 0) {
+        const sampleIssues: Issue[] = [
+          {
+            _id: 'sample-error-1',
+            title: 'Unable to connect to server',
+            description: 'Please make sure the backend server is running. These are sample issues.',
+            status: 'open' as const,
+            priority: 'critical' as const,
+            assignee: 'System Admin',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            _id: 'sample-error-2',
+            title: 'Sample Issue - Getting Started',
+            description: 'This is a demo issue to show the interface while the server is offline.',
+            status: 'in-progress' as const,
+            priority: 'medium' as const,
+            assignee: 'Demo User',
+            createdAt: new Date(Date.now() - 86400000).toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+        ];
+        setIssues(sampleIssues);
+        setTotalCount(sampleIssues.length);
+      }
+      
+      setError('Failed to fetch issues: ' + (err.message || 'Unknown error') + '. Showing sample data.');
     } finally {
       setLoading(false);
     }
@@ -199,13 +288,41 @@ const IssuesList: React.FC = () => {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchIssues();
-  }, [page, rowsPerPage, filters]);
+  }, [page, rowsPerPage, filters]); // fetchIssues is stable
+
+  // Initial load
+  useEffect(() => {
+    fetchIssues();
+  }, []);
 
   useEffect(() => {
     fetchAssignees();
+  }, []);
+
+  // Live updates via SSE
+  useEffect(() => {
+    let es: EventSource | null = null;
+    try {
+      es = new EventSource(getSseUrl());
+      const handler = () => {
+        fetchIssues();
+      };
+      es.addEventListener('issue-created', handler);
+      es.addEventListener('issue-updated', handler);
+      // Fallback on any message
+      es.onmessage = handler;
+      es.onerror = () => {
+        es && es.close();
+      };
+    } catch (e) {
+      console.warn('SSE not available:', e);
+    }
+    return () => {
+      if (es) es.close();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFilterChange = (field: keyof IssueFilters, value: string) => {

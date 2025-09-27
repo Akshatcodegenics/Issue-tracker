@@ -53,10 +53,9 @@ const IssueDetail: React.FC = () => {
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchIssue();
-  }, [id]);
+  }, [id]); // fetchIssue is stable
 
   const handleBack = () => {
     navigate('/');

@@ -2,9 +2,14 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Container, AppBar, Toolbar, Typography, Box } from '@mui/material';
+import { Container, Box } from '@mui/material';
 import IssuesList from './components/IssuesList';
 import IssueDetail from './components/IssueDetail';
+import Dashboard from './components/Dashboard';
+import Watermark3D from './components/Watermark3D';
+import PageTransition from './components/PageTransition';
+import NavigationBar from './components/NavigationBar';
+import { LiveTrackingProvider } from './contexts/LiveTrackingContext';
 import './App.css';
 
 const theme = createTheme({
@@ -20,36 +25,17 @@ const theme = createTheme({
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
+    <LiveTrackingProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
         <Box sx={{ position: 'relative', minHeight: '100vh' }}>
+          {/* 3D Watermark Background */}
+          <Watermark3D />
+          
           {/* Main App Content */}
           <Box sx={{ position: 'relative', zIndex: 1 }}>
-            <AppBar 
-              position="static" 
-              sx={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                backdropFilter: 'blur(10px)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              <Toolbar>
-                <Typography 
-                  variant="h6" 
-                  component="div" 
-                  sx={{ 
-                    flexGrow: 1,
-                    fontWeight: 'bold',
-                    textShadow: '0 2px 4px rgba(0,0,0,0.3)',
-                    letterSpacing: '0.5px',
-                  }}
-                >
-                  🚀 Issue Tracker Pro
-                </Typography>
-              </Toolbar>
-            </AppBar>
+            <NavigationBar />
             
             <Container 
               maxWidth="lg" 
@@ -60,15 +46,20 @@ function App() {
                 zIndex: 2,
               }}
             >
-              <Routes>
-                <Route path="/" element={<IssuesList />} />
-                <Route path="/issues/:id" element={<IssueDetail />} />
-              </Routes>
+              <PageTransition>
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/issues" element={<IssuesList />} />
+                  <Route path="/issues/:id" element={<IssueDetail />} />
+                </Routes>
+              </PageTransition>
             </Container>
           </Box>
         </Box>
-      </Router>
-    </ThemeProvider>
+        </Router>
+      </ThemeProvider>
+    </LiveTrackingProvider>
   );
 }
 

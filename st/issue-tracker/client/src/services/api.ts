@@ -11,6 +11,12 @@ const api = axios.create({
   timeout: 10000, // 10 second timeout
 });
 
+export const getSseUrl = () => {
+  // Use same-origin /api in production; in dev, use the explicit API base URL
+  if (process.env.NODE_ENV === 'production') return '/api/events';
+  return `${API_BASE_URL}/events`;
+};
+
 // Add request interceptor for better error handling
 api.interceptors.request.use(
   (config) => {

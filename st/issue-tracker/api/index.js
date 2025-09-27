@@ -17,6 +17,50 @@ app.use((req, res, next) => {
   next();
 });
 
+// --- Simple in-memory pub-sub for Server-Sent Events (SSE) ---
+const sseClients = new Set();
+const sseBroadcast = (event, data) => {
+  const payload = `event: ${event}\n` + `data: ${JSON.stringify(data)}\n\n`;
+  for (const res of sseClients) {
+    try {
+      res.write(payload);
+    } catch (_) {
+      // ignore stale clients
+    }
+  }
+};
+
+// SSE endpoint for live updates
+app.get('/events', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  res.flushHeaders && res.flushHeaders();
+
+  // Initial hello to establish stream
+  res.write(`event: connected\n` + `data: ${JSON.stringify({ ts: Date.now() })}\n\n`);
+
+  sseClients.add(res);
+
+  // Heartbeat
+  const heartbeat = setInterval(() => {
+    try {
+      res.write(`event: ping\n` + `data: ${Date.now()}\n\n`);
+    } catch (_) {
+      // client likely disconnected
+      clearInterval(heartbeat);
+    }
+  }, 15000);
+
+  req.on('close', () => {
+    clearInterval(heartbeat);
+    sseClients.delete(res);
+    try { res.end(); } catch (_) {}
+  });
+});
+
 // MongoDB connection
 const connectDB = async () => {
   try {
@@ -202,6 +246,10 @@ app.post('/issues', async (req, res) => {
     });
 
     const savedIssue = await issue.save();
+
+    // Notify subscribers
+    sseBroadcast('issue-created', { issue: savedIssue });
+
     res.status(201).json(savedIssue);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -229,6 +277,10 @@ app.put('/issues/:id', async (req, res) => {
     if (assignee !== undefined) issue.assignee = assignee;
 
     const updatedIssue = await issue.save();
+
+    // Notify subscribers
+    sseBroadcast('issue-updated', { issue: updatedIssue });
+
     res.json(updatedIssue);
   } catch (error) {
     res.status(500).json({ error: error.message });
