@@ -30,6 +30,9 @@ const connectDB = async () => {
   }
 };
 
+// Helper: check DB connection status
+const isDbConnected = () => mongoose.connection && mongoose.connection.readyState === 1;
+
 // Connect to database
 connectDB();
 
@@ -82,7 +85,7 @@ const Issue = mongoose.model('Issue', issueSchema);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
+  res.json({ status: 'ok', dbConnected: isDbConnected() });
 });
 
 // GET /issues - Get all issues with search, filter, sort, pagination
@@ -98,6 +101,19 @@ app.get('/issues', async (req, res) => {
       page = 1,
       pageSize = 10
     } = req.query;
+
+    // If DB is not connected, return an empty, well-formed response
+    if (!isDbConnected()) {
+      return res.json({
+        issues: [],
+        pagination: {
+          page: parseInt(page),
+          pageSize: parseInt(pageSize),
+          total: 0,
+          totalPages: 0
+        }
+      });
+    }
 
     // Build query object
     let query = {};
@@ -152,6 +168,9 @@ app.get('/issues', async (req, res) => {
 // GET /issues/:id - Get single issue
 app.get('/issues/:id', async (req, res) => {
   try {
+    if (!isDbConnected()) {
+      return res.status(404).json({ error: 'Issue not found' });
+    }
     const issue = await Issue.findById(req.params.id);
     if (!issue) {
       return res.status(404).json({ error: 'Issue not found' });
@@ -165,6 +184,9 @@ app.get('/issues/:id', async (req, res) => {
 // POST /issues - Create new issue
 app.post('/issues', async (req, res) => {
   try {
+    if (!isDbConnected()) {
+      return res.status(503).json({ error: 'Database not connected' });
+    }
     const { title, description, status, priority, assignee } = req.body;
     
     if (!title || !description) {
@@ -189,6 +211,9 @@ app.post('/issues', async (req, res) => {
 // PUT /issues/:id - Update issue
 app.put('/issues/:id', async (req, res) => {
   try {
+    if (!isDbConnected()) {
+      return res.status(503).json({ error: 'Database not connected' });
+    }
     const { title, description, status, priority, assignee } = req.body;
 
     const issue = await Issue.findById(req.params.id);
@@ -213,6 +238,9 @@ app.put('/issues/:id', async (req, res) => {
 // GET /assignees - Get unique assignees for filter dropdown
 app.get('/assignees', async (req, res) => {
   try {
+    if (!isDbConnected()) {
+      return res.json([]);
+    }
     const assignees = await Issue.distinct('assignee');
     res.json(assignees.filter(assignee => assignee && assignee !== 'Unassigned'));
   } catch (error) {
