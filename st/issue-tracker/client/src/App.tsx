@@ -7,6 +7,7 @@ import IssuesList from './components/IssuesList';
 import IssueDetail from './components/IssueDetail';
 import Dashboard from './components/Dashboard';
 import Watermark3D from './components/Watermark3D';
+import WatermarkImages from './components/WatermarkImages';
 import PageTransition from './components/PageTransition';
 import NavigationBar from './components/NavigationBar';
 import { LiveTrackingProvider } from './contexts/LiveTrackingContext';
@@ -30,8 +31,9 @@ function App() {
         <CssBaseline />
         <Router>
         <Box sx={{ position: 'relative', minHeight: '100vh' }}>
-          {/* 3D Watermark Background */}
+          {/* Watermark Backgrounds */}
           <Watermark3D />
+          <WatermarkImages />
           
           {/* Main App Content */}
           <Box sx={{ position: 'relative', zIndex: 1 }}>
