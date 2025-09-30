@@ -1,42 +1,42 @@
-Small Issue Tracker
+## Small Issue Tracker
 
-A lightweight and simple Issue Tracking System designed to help small teams or solo developers manage tasks, bugs, and feature requests efficiently. This project is ideal for learning web development, project management, and CRUD operations.
+## A lightweight and simple Issue Tracking System designed to help small teams or solo developers manage tasks, bugs, and feature requests efficiently. This project is ideal for learning web development, project management, and CRUD operations.
 
-Features
+### Features
 
-Create Issues – Add new issues with a title, description, priority, and status.
+### Create Issues – Add new issues with a title, description, priority, and status.
 
-View Issues – See all issues in a structured list with filtering options.
+### View Issues – See all issues in a structured list with filtering options.
 
-Update Issues – Modify issue details or change the status (Open, In Progress, Closed).
+### Update Issues – Modify issue details or change the status (Open, In Progress, Closed).
 
-Delete Issues – Remove issues that are resolved or no longer relevant.
+### Delete Issues – Remove issues that are resolved or no longer relevant.
 
-Responsive UI – Works well on both desktop and mobile devices.
+### Responsive UI – Works well on both desktop and mobile devices.
 
-Tech Stack
+### Tech Stack
 
-Frontend: HTML, CSS, JavaScript (or React.js if applicable)
+### Frontend: HTML, CSS, JavaScript (or React.js if applicable)
 
-Backend: Node.js + Express.js (if applicable)
+### Backend: Node.js + Express.js (if applicable)
 
-Database: MongoDB / SQLite / Local Storage (depending on implementation)
+### Database: MongoDB / SQLite / Local Storage (depending on implementation)
 
-Version Control: Git & GitHub
+### Version Control: Git & GitHub
 
-Installation
+### Installation
 
 Clone the repository:
 
 git clone https://github.com/yourusername/small-issue-tracker.git
 
 
-Navigate to the project folder:
+### Navigate to the project folder:
 
 cd small-issue-tracker
 
 
-Install dependencies (if using Node.js backend):
+### Install dependencies (if using Node.js backend):
 
 npm install
 
@@ -58,14 +58,11 @@ Track the status of your issues in the Issue List.
 
 Edit or update issues as required.
 
-Delete issues that are resolved.
-
-Screenshots
+Delete issues that are resolved
 
 
 
-
-Contributing
+### Contributing
 
 Contributions are welcome! To contribute:
 
@@ -79,6 +76,6 @@ Push to the branch: git push origin feature-name
 
 Open a Pull Request.
 
-License
+### License
 
 This project is licensed under the MIT License. 
