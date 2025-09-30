@@ -1,28 +1,23 @@
 ## Small Issue Tracker
 
-## A lightweight and simple Issue Tracking System designed to help small teams or solo developers manage tasks, bugs, and feature requests efficiently. This project is ideal for learning web development, project management, and CRUD operations.
+A lightweight and simple Issue Tracking System designed to help small teams or solo developers manage tasks, bugs, and feature requests efficiently. This project is ideal for learning web development, project management, and CRUD operations.
 
 ### Features
-
-### Create Issues – Add new issues with a title, description, priority, and status.
-
-### View Issues – See all issues in a structured list with filtering options.
-
-### Update Issues – Modify issue details or change the status (Open, In Progress, Closed).
-
-### Delete Issues – Remove issues that are resolved or no longer relevant.
-
-### Responsive UI – Works well on both desktop and mobile devices.
+ Create Issues – Add new issues with a title, description, priority, and status.
+ View Issues – See all issues in a structured list with filtering options.
+ Update Issues – Modify issue details or change the status (Open, In Progress, Closed).
+ Delete Issues – Remove issues that are resolved or no longer relevant.
+ Responsive UI – Works well on both desktop and mobile devices.
 
 ### Tech Stack
 
-### Frontend: HTML, CSS, JavaScript (or React.js if applicable)
+ Frontend: HTML, CSS, JavaScript (or React.js if applicable)
 
-### Backend: Node.js + Express.js (if applicable)
+ Backend: Node.js + Express.js (if applicable)
 
-### Database: MongoDB / SQLite / Local Storage (depending on implementation)
+ Database: MongoDB / SQLite / Local Storage (depending on implementation)
 
-### Version Control: Git & GitHub
+ Version Control: Git & GitHub
 
 ### Installation
 
