@@ -21,29 +21,44 @@ A lightweight and simple Issue Tracking System designed to help small teams or s
 
 ### Installation
 
-Clone the repository:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Akshatcodegenics/Issue-tracker.git
+   cd Issue-tracker
+   ```
 
-git clone https://github.com/yourusername/small-issue-tracker.git
+2. **Install dependencies:**
+   ```bash
+   # Install root dependencies
+   npm install
+   
+   # Install all project dependencies
+   npm run install-all
+   ```
 
+3. **Set up MongoDB:**
+   - Make sure MongoDB is running locally on `mongodb://localhost:27017`
+   - The API will automatically connect to `issue-tracker` database
 
-### Navigate to the project folder:
+4. **Seed the database with sample data:**
+   ```bash
+   cd api
+   npm run seed
+   ```
 
-cd small-issue-tracker
+5. **Run the application:**
+   ```bash
+   # Run both frontend and backend concurrently
+   npm run dev
+   
+   # Or run separately:
+   npm run server  # Backend on http://localhost:5000
+   npm run client  # Frontend on http://localhost:3000
+   ```
 
-
-### Install dependencies (if using Node.js backend):
-
-npm install
-
-
-Run the application:
-
-npm start
-
-
-Open your browser and go to:
-
-http://localhost:3000
+6. **Open your browser and go to:**
+   - Frontend: http://localhost:3000
+   - API Health Check: http://localhost:5000/health
 
 Usage
 
