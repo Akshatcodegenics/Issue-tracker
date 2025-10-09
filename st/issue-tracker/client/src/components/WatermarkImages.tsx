@@ -3,7 +3,10 @@ import React, { useMemo } from 'react';
 const images = [
   '/seed-images/bug.svg',
   '/seed-images/rocket.svg',
-  '/seed-images/gear.svg'
+  '/seed-images/gear.svg',
+  '/seed-images/task.svg',
+  '/seed-images/priority.svg',
+  '/seed-images/database.svg'
 ];
 
 const WatermarkImages: React.FC = () => {

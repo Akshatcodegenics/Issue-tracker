@@ -85,6 +85,31 @@ const HeroSection = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
   marginBottom: theme.spacing(4),
   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+  // Responsive design improvements
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(4, 2),
+    borderRadius: '16px',
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(3, 2),
+    borderRadius: '12px',
+  },
+}));
+
+// Add responsive StatCard improvements
+const ResponsiveStatCard = styled(StatCard)(({ theme }) => ({
+  minHeight: '120px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  [theme.breakpoints.down('md')]: {
+    minHeight: '100px',
+    padding: theme.spacing(2),
+  },
+  [theme.breakpoints.down('sm')]: {
+    minHeight: '80px',
+    padding: theme.spacing(1.5),
+  },
 }));
 
 interface DashboardStats {

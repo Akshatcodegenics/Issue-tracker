@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
+const { connectDB, isDbConnected } = require('./db');
 
 const app = express();
 
@@ -60,22 +61,6 @@ app.get('/events', (req, res) => {
     try { res.end(); } catch (_) {}
   });
 });
-
-// MongoDB connection
-const connectDB = async () => {
-  try {
-    const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/issue-tracker';
-    console.log('Attempting to connect to MongoDB...');
-    const conn = await mongoose.connect(mongoURI);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error('MongoDB connection error:', error.message);
-    console.log('Running without database connection for testing...');
-  }
-};
-
-// Helper: check DB connection status
-const isDbConnected = () => mongoose.connection && mongoose.connection.readyState === 1;
 
 // Connect to database
 connectDB();
